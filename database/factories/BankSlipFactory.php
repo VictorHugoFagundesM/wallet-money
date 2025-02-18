@@ -21,6 +21,7 @@ class BankSlipFactory extends Factory
 
         return [
             'created_by' => $user->id,
+            'name' => fake()->text(50),
             'amount' => fake()->numberBetween(1, 99999),
             'code' => fake()->unique()->numerify('#################################'),
         ];

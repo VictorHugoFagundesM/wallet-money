@@ -1,24 +1,49 @@
 <?php
 
+use App\Http\Controllers\BankSlipController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RefundController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // rotas de perfil
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
 
-    Route::get('/transaction', [TransactionController::class, 'create'])->name('transaction.create')->name('transaction.create');
-    Route::get('/transaction/{id}', [TransactionController::class, 'show'])->where('id', '[0-9]+')->name('transaction.show');
-    Route::post('/transaction', [TransactionController::class, 'store'])->name('transaction.store')->name('transaction.store');
+    // Rotas de transações
+    Route::prefix('transaction')->name('transaction.')->group(function () {
+        Route::get('/', [TransactionController::class, 'create'])->name('create');
+        Route::get('{id}/info', [TransactionController::class, 'info'])->where('id', '[0-9]+')->name('info');
+        Route::post('/', [TransactionController::class, 'store'])->name('store');
+    });
+
+    // Rota de pagamento
+    Route::get('/payment', [BankSlipController::class, 'payment'])->name('payment.create');
+
+    // Rotas de boletos
+    Route::prefix('bank-slip')->name('bank-slip.')->group(function () {
+        Route::get('/', [BankSlipController::class, 'index'])->name('index');
+        Route::get('create', [BankSlipController::class, 'create'])->name('create');
+        Route::get('{id}/info', [BankSlipController::class, 'info'])->where('id', '[0-9]+')->name('info');
+        Route::post('/', [BankSlipController::class, 'store'])->name('store');
+    });
+
+    // Rotas de estornos
+    Route::prefix('refund')->name('refund.')->group(function () {
+        Route::get('{id}/request', [RefundController::class, 'create'])->where('id', '[0-9]+')->name('create');
+        Route::post('/', [RefundController::class, 'store'])->name('store');
+    });
 });
 
 require __DIR__.'/auth.php';

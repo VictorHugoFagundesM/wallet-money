@@ -71,7 +71,7 @@ class User extends Authenticatable
             'receiver.id as receiver_id',
             'receiver.name as receiver_name'
         )
-        ->orderBy("transactions.created_at");
+        ->orderBy("transactions.created_at", "desc");
 
         return $test->get();
     }

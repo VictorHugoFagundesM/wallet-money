@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('bank_slips', function (Blueprint $table) {
             $table->id();
+            $table->string("name", 50);
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->bigInteger("amount");
             $table->string("code");

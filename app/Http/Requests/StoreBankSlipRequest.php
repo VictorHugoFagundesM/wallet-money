@@ -2,16 +2,18 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class StoreBankSlipRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
+    protected function prepareForValidation(): void
     {
-        return false;
+        $this->merge([
+            'amount' => (int) preg_replace('/\D/', '', $this->amount),
+        ]);
     }
 
     /**
@@ -22,7 +24,25 @@ class StoreBankSlipRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "name" => ["required", "string", "max:50"],
+            "amount" => ["required", "integer"],
         ];
+    }
+
+    protected function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $user = Auth::user();
+
+            if ($this->amount > 10000000) {
+                $validator->errors()->add('amount', 'O valor do boleto não deve ultrapassar R$ 100.000,00.');
+            }
+
+        });
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new ValidationException($validator);
     }
 }

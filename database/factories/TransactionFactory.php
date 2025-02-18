@@ -24,6 +24,7 @@ class TransactionFactory extends Factory
         $payer = User::inRandomOrder()->whereNot("id", $receiver->id)->first();
         $typeId = TransactionType::inRandomOrder()->first()->id;
         $bankSlipCode = null;
+        $bankSlipId = null;
         $isSuccess = true;
         $amount = 0;
 
@@ -32,6 +33,7 @@ class TransactionFactory extends Factory
             $bankSlip = BankSlip::inRandomOrder()->first();
             $bankSlipCode = $bankSlip->code;
             $amount = $bankSlip->amount;
+            $bankSlipId = $bankSlip->id;
 
         } else {
             $amount = fake()->numberBetween(1, 99999);
@@ -55,6 +57,7 @@ class TransactionFactory extends Factory
             'payer_id' => $payer ? $payer->id : null,
             'receiver_id' => $receiver->id,
             'bank_slip_code' => $bankSlipCode,
+            'bank_slip_id' => $bankSlipId,
             'amount' => $amount,
             'is_success' => $isSuccess
         ];

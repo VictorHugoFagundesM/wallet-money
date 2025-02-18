@@ -3,18 +3,11 @@
     <div class="py-12">
         <div class="max-w-[90%] mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl p-6">
-
                 <div class="text-2xl mb-5">
                     <a href="{{ url("/home") }}">
                         <i class="fa-solid fa-arrow-left-long text-xl text-gray-600 mr-2"></i>
                     </a>
-
-                    @if (isset($type) && $type == 'bank-slip')
-                        Realizar pagamento
-                    @else
-                        Realizar transferência
-                    @endif
-
+                    Pagar boleto
                 </div>
 
                 <div class="border flex-1 rounded-lg border-gray-300 p-2 flex flex-col">
@@ -24,27 +17,15 @@
                     </div>
                 </div>
 
-                <form method="post" action="{{ route('transaction.store') }}" class="mt-6 space-y-6">
+                <form method="post" action="{{ route('payment.store') }}" class="mt-6 space-y-6">
                     @csrf
                     @method('post')
 
-                    @if (isset($type) && $type == 'bank-slip')
-
-                        <div>
-                            <x-input-label for="update_code" :value="__('Linha digitável')" />
-                            <x-text-input id="update_code" name="code" type="text" class="mt-1 block w-full" maxlength="12" required/>
-                            <x-input-error :messages="$errors->get('code')" class="mt-2" />
-                        </div>
-
-                    @else
-
-                        <div>
-                            <x-input-label for="update_account_number" :value="__('Número da conta')" />
-                            <x-text-input id="update_account_number" name="account_number" type="text" class="mt-1 block w-full" id="account_number_mask" maxlength="12" required/>
-                            <x-input-error :messages="$errors->get('account_number')" class="mt-2" />
-                        </div>
-
-                    @endif
+                    <div>
+                        <x-input-label for="update_code" :value="__('Linha digitável')" />
+                        <x-text-input id="update_code" name="code" type="text" class="mt-1 block w-full" maxlength="12" required/>
+                        <x-input-error :messages="$errors->get('code')" class="mt-2" />
+                    </div>
 
                     <div>
                         <x-input-label for="update_amount" :value="__('Valor')" />
@@ -55,7 +36,7 @@
                     <div class="flex items-center gap-4">
                         <x-primary-button class="flex-1 flex justify-center">{{ __('Enviar') }}</x-primary-button>
 
-                        @if (session('status') === 'transaction-created')
+                        @if (session('status') === 'payment-created')
                             <p
                                 x-data="{ show: true }"
                                 x-show="show"

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('type_id')->nullable()->constrained('transaction_types')->onDelete('set null');
+            $table->foreignId('bank_slip_id')->nullable()->constrained('bank_slips')->onDelete('set null');
             $table->foreignId('payer_id')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('receiver_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string("bank_slip_code")->nullable();
