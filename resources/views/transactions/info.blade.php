@@ -1,10 +1,10 @@
 <x-app-layout>
-    <div class="py-12">
+    <div class="py-12 max-w-[1200px] mr-auto ml-auto">
         <div class="max-w-[90%] mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl p-6">
 
             <div class="flex text-2xl mb-5">
-                <a href="{{ url("/home") }}">
+                <a href="{{ route("home") }}">
                     <i class="fa-solid fa-arrow-left-long text-xl text-gray-600 mr-2"></i>
                 </a>
                 <x-transaction-description :transaction="$transaction" :user="Auth::user()" />
@@ -12,7 +12,14 @@
 
             <div class="flex">
                 @if ($transaction->is_success)
-                    <i class="fa-solid text-4xl fa-arrow-trend-down text-red-500 ml-auto mr-auto mb-5 mt-5"></i>
+
+                    @if ($transaction->receiver_id == $user->id)
+                        <i class="fa-solid text-4xl fa-arrow-trend-up text-green-500 ml-auto mr-auto mb-5 mt-5"></i>
+
+                    @else
+                        <i class="fa-solid text-4xl fa-arrow-trend-down text-red-500 ml-auto mr-auto mb-5 mt-5"></i>
+                    @endif
+
                 @else
                     <i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl ml-auto mr-auto mb-5 mt-5"></i>
                 @endif
@@ -50,7 +57,7 @@
                     <span class="ml-auto text-end break-all"> R$ {{str_replace('.', ',',(string)($transaction->amount / 100))}} </span>
                 </span>
 
-                @if ($transaction->is_success && $transaction->payer->id == $user->id)
+                @if ($transaction && $transaction->is_success && $transaction->payer->id == $user->id && in_array($transaction->type_id, $allowedTypesForRefund))
                     <a
                         href="{{ route('refund.create', ["id" => $transaction->id]) }}"
                         class="ml-auto mr-auto mt-4 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase"

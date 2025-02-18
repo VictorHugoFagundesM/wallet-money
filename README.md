@@ -37,3 +37,5 @@ Para inciar o sistema é necessário configurar na máquina as tecnologias lista
 - php artisan migrate:fresh --seed (cria as tabelas no banco de dados e popula elas com o Seeder)
 - npm run build (Compila os arquivos css e js)
 - php artisan serve (Roda o projeto, por padrão na porta 8000)
+
+Obs: É recomendável usar em formato mobile, embora esteja responsivo para desktop

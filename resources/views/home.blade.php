@@ -1,6 +1,6 @@
 <x-app-layout>
 
-    <div class="py-12">
+    <div class="py-12 max-w-[1200px] mr-auto ml-auto">
         <div class="max-w-[90%] mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl">
                 <div class="p-6 text-gray-900">
@@ -21,7 +21,7 @@
                             <span class="text-xs font-light">Transferência</span>
                         </a>
 
-                        <a href="{{url('payment')}}" class="border flex-1 rounded-lg border-gray-300 p-2 flex flex-col items-center">
+                        <a href="{{url('bank-slip/payment')}}" class="border flex-1 rounded-lg border-gray-300 p-2 flex flex-col items-center">
                             <i class="text-gray-600 text-xl fa-solid fa-dollar-sign"></i>
                             <span class="text-xs font-light">Pagar</span>
                         </a>

@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -22,9 +23,9 @@ class RefundController extends Controller
     /**
      * Redireciona à tela de criação
      *
-     * @return View
+     * @return RedirectResponse|View
      */
-    public function create(int $id): View
+    public function create(int $id): RedirectResponse|View
     {
         $transaction = Transaction::find($id);
         $user = Auth::user();
@@ -40,35 +41,28 @@ class RefundController extends Controller
         }
     }
 
-    public function success() {
-        return view('refunds.success');
-    }
-
-    public function pending() {
-        return view('refunds.pending');
-    }
-
 
     /**
      * Salva a transação
      *
      * @param StoreRefundRequest $request
-     * @return RedirectResponse
+     * @return RedirectResponse|View
      */
-    public function store(StoreRefundRequest $request): RedirectResponse
+    public function store(StoreRefundRequest $request): RedirectResponse|View
     {
 
         try {
-            $user = Auth::user();
+            $receiver = Auth::user();
             $transaction = Transaction::find($request->transaction_id);
+            $payer = User::find($transaction->receiver_id);
             $status = RefundStatusEnum::REFUNDED;
 
             // Obtém a quantidade de estornos solicitados pelo usuário
-            $refund = Refund::where("reciever_id", $user->id)
+            $refund = Refund::where("receiver_id", $receiver->id)
             ->whereDate("created_at", Carbon::today()->toDateString())
             ->count();
 
-            if (count($refund) > 1) {
+            if ($refund > 10) {
                 $status = RefundStatusEnum::PENDING;
             }
 
@@ -83,6 +77,12 @@ class RefundController extends Controller
             ]);
 
             if ($status == RefundStatusEnum::REFUNDED) {
+
+                $payer->balance -= $transaction->amount;
+                $receiver->balance += $transaction->amount;
+
+                $payer->save();
+                $receiver->save();
 
                 Transaction::create([
                     'type_id' => $transaction->type_id,

@@ -28,10 +28,14 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::find($id);
 
+        // Tipos de transação disponíveis para estorno
+        $allowedTypesForRefund = TransactionTypeEnum::getAllowedForRefund();
+
         if ($transaction) {
             return view('transactions.info', [
                 'user' => Auth::user(),
                 'transaction' => $transaction,
+                "allowedTypesForRefund" => $allowedTypesForRefund
             ]);
 
         } else {
@@ -72,7 +76,7 @@ class TransactionController extends Controller
 
             // Caso seja um depósito por boleto
             } else {
-                $bankSlip = BankSlip::where(["code" => $request->code])->first();
+                $bankSlip = BankSlip::where(["id" => $request->bank_slip_id])->first();
                 $receiver = User::where(["id" => $bankSlip->created_by])->first();
                 $typeId = TransactionTypeEnum::BANK_SLIP;
                 $bankSlipCode = $request->code;

@@ -1,10 +1,10 @@
 <x-app-layout>
 
-    <div class="py-12">
+    <div class="py-12 max-w-[1200px] mr-auto ml-auto">
         <div class="max-w-[90%] mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl p-6">
                 <div class="text-2xl mb-5">
-                    <a href="{{ url("/home") }}">
+                    <a href="{{ route("home") }}">
                         <i class="fa-solid fa-arrow-left-long text-xl text-gray-600 mr-2"></i>
                     </a>
                     Pagar boleto

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\TransactionTypeEnum;
 use App\Models\Refund;
 use App\Models\Transaction;
 use Illuminate\Contracts\Validation\Validator;
@@ -19,7 +20,7 @@ class StoreRefundRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "reason" => ["required", "text", "max:300"],
+            "reason" => ["required", "string", "max:300"],
             "transaction_id" => ["required", "integer", "exists:transactions,id"]
         ];
     }
@@ -31,9 +32,12 @@ class StoreRefundRequest extends FormRequest
 
             if (isset($this->transaction_id) && $this->transaction_id) {
                 $transaction = Transaction::find($this->transaction_id);
-                $refund = Refund::where(["reciever_id" => $user->id, "transaction_id" => $transaction->id])->count();
+                $refund = Refund::where(["receiver_id" => $user->id, "transaction_id" => $transaction->id])->count();
 
-                if (!($transaction && $transaction->is_success && $transaction->payer->id == $user->id)) {
+                // Tipos de transação disponíveis para estorno
+                $allowedTypes = TransactionTypeEnum::getAllowedForRefund();
+
+                if (!($transaction && $transaction->is_success && $transaction->payer->id == $user->id && in_array($transaction->type_id, $allowedTypes))) {
                     $validator->errors()->add('reason', 'Não é possível solicitar o estorno desta transação!');
                 }
 

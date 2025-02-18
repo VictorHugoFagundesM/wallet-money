@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="py-12">
+    <div class="py-12 max-w-[1200px] mr-auto ml-auto">
         <div class="max-w-[90%] mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl p-6">
 
@@ -30,7 +30,7 @@
 
             <div class="max-w-[100%] border flex-1 rounded-lg border-gray-300 p-2 flex flex-col items-center mt-5 relative">
                 {{$bankSlip->code}}
-                <i class="fa-regular fa-copy absolute top-1 right-1 bg-white p-2" onclick="navigator.clipboard.writeText('{{ $bankSlip->code }}')"></i>
+                <i class="fa-regular fa-copy absolute cursor-pointer top-1 right-1 bg-white p-2 hover:text-blue-500 active:text-red-500 focus:outline-none" onclick="navigator.clipboard.writeText('{{ $bankSlip->code }}')"></i>
             </div>
 
         </div>

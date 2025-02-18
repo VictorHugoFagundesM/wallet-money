@@ -15,4 +15,11 @@ enum TransactionTypeEnum:int
             self::REFUND => 3,
         };
     }
+
+    // Tipos de transação disponíveis para estorno
+    static function getAllowedForRefund() {
+        return [self::TRANSFER, self::BANK_SLIP];
+
+    }
+
 }

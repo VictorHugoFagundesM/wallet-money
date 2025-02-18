@@ -5,11 +5,11 @@
             <div class="bg-white overflow-hidden shadow-sm rounded-3xl p-6">
 
                 <div class="text-2xl mb-5">
-                    <a href="{{ route("home") }}">
+                    <a href="{{ route('bank-slip.payment') }}">
                         <i class="fa-solid fa-arrow-left-long text-xl text-gray-600 mr-2"></i>
                     </a>
 
-                    Realizar transferência
+                    Confira os dados do pagamento
 
                 </div>
 
@@ -24,20 +24,26 @@
                     @csrf
                     @method('post')
 
-                    <div>
-                        <x-input-label for="update_account_number" :value="__('Número da conta')" />
-                        <x-text-input id="update_account_number" name="account_number" type="text" class="mt-1 block w-full" id="account_number_mask" maxlength="12" required/>
-                        <x-input-error :messages="$errors->get('account_number')" class="mt-2" />
+                    <input type="hidden" name="bank_slip_id" value="{{$bankSlip->id}}">
+                    <input type="hidden" name="amount" value="{{$bankSlip->amount}}">
+
+                    <span class="justify-center flex w-[100%] font-medium text-center mt-6 mb-5">{{$bankSlip->name}}</span>
+
+                    <div class="flex">
+                        <i class="fa-regular fa-file text-gray-500 text-6xl ml-auto mr-auto mb-5"></i>
                     </div>
 
-                    <div>
-                        <x-input-label for="update_amount" :value="__('Valor')" />
-                        <x-text-input id="update_amount" name="amount" type="text" class="mt-1 block w-full" id="money_mask" required/>
-                        <x-input-error :messages="$errors->get('amount')" class="mt-2" />
+                    <div class="flex-1 flex flex-col">
+                        <span class="justify-center flex w-[100%] text-xl text-center mt-5 mb-">R$ <span class="text-base text-xl ml-2"> {{str_replace('.', ',',(string)($bankSlip->amount / 100))}} </span></span>
                     </div>
+
+                    <div class="max-w-[100%] border flex-1 rounded-lg border-gray-300 p-2 flex flex-col items-center mt-5 relative">
+                        {{$bankSlip->code}}
+                    </div>
+
 
                     <div class="flex items-center gap-4">
-                        <x-primary-button class="flex-1 flex justify-center">{{ __('Enviar') }}</x-primary-button>
+                        <x-primary-button class="flex-1 flex justify-center">{{ __('Pagar') }}</x-primary-button>
 
                         @if (session('status') === 'transaction-created')
                             <p

@@ -24,24 +24,24 @@ Route::middleware('auth')->group(function () {
     // Rotas de transações
     Route::prefix('transaction')->name('transaction.')->group(function () {
         Route::get('/', [TransactionController::class, 'create'])->name('create');
-        Route::get('{id}/info', [TransactionController::class, 'info'])->where('id', '[0-9]+')->name('info');
+        Route::get('/{id}/info', [TransactionController::class, 'info'])->where('id', '[0-9]+')->name('info');
         Route::post('/', [TransactionController::class, 'store'])->name('store');
     });
-
-    // Rota de pagamento
-    Route::get('/payment', [BankSlipController::class, 'payment'])->name('payment.create');
 
     // Rotas de boletos
     Route::prefix('bank-slip')->name('bank-slip.')->group(function () {
         Route::get('/', [BankSlipController::class, 'index'])->name('index');
-        Route::get('create', [BankSlipController::class, 'create'])->name('create');
-        Route::get('{id}/info', [BankSlipController::class, 'info'])->where('id', '[0-9]+')->name('info');
+        Route::get('/create', [BankSlipController::class, 'create'])->name('create');
+        Route::get('/{id}/info', [BankSlipController::class, 'info'])->where('id', '[0-9]+')->name('info');
         Route::post('/', [BankSlipController::class, 'store'])->name('store');
+        Route::get('/payment', [BankSlipController::class, 'payment'])->name('payment');
+        Route::post('/payment/check', [BankSlipController::class, 'paymentCheck'])->name('payment.check');
+        Route::get('/payment/{id}/confirmation', [BankSlipController::class, 'paymentConfirmation'])->name('payment.confirmation');
     });
 
     // Rotas de estornos
     Route::prefix('refund')->name('refund.')->group(function () {
-        Route::get('{id}/request', [RefundController::class, 'create'])->where('id', '[0-9]+')->name('create');
+        Route::get('/{id}/request', [RefundController::class, 'create'])->where('id', '[0-9]+')->name('create');
         Route::post('/', [RefundController::class, 'store'])->name('store');
     });
 });

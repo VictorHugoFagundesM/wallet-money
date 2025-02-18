@@ -6,6 +6,7 @@ use Exception;
 use App\Models\BankSlip;
 use App\Models\User;
 use App\Enums\TransactionTypeEnum;
+use App\Http\Requests\CheckBankSlipRequest;
 use App\Http\Requests\StoreBankSlipRequest;
 use App\Models\Transaction;
 use Illuminate\Contracts\View\View;
@@ -73,14 +74,50 @@ class BankSlipController extends Controller
     }
 
     /**
-     * Redireiona à página de pagamento de Boletos
+     * Redireciona à página de pagamento de Boletos
      *
      * @return View
      */
     public function payment(): View
     {
         $user = Auth::user();
-        return view("transactions.create", ["user" => $user, "type" => "bank-slip"]);
+
+        return view('bank-slips.payment', [
+            'user' => Auth::user(),
+        ]);
+    }
+
+    /**
+     * Redireiona à confirmação de pagamento do boleto
+     *
+     * @param CheckBankSlipRequest $request)
+     * @return RedirectResponse
+     */
+    public function paymentCheck(CheckBankSlipRequest $request): RedirectResponse
+    {
+        $bankSlip = BankSLip::where("code", $request->code)->first();
+        return redirect()->route('bank-slip.payment.confirmation', ["id" => $bankSlip->id]);
+    }
+
+    /**
+     * Redireiona à confirmação de pagamento do boleto
+     *
+     * @param CheckBankSlipRequest $request)
+     * @return RedirectResponse|View
+     */
+    public function paymentConfirmation(int $id): RedirectResponse|View
+    {
+        $bankSlip = BankSlip::find($id);
+
+        if ($bankSlip) {
+            return view('bank-slips.payment-confirmation', [
+                'user' => Auth::user(),
+                'bankSlip' => $bankSlip,
+            ]);
+
+        } else {
+            return back()->withErrors('Boleto inválido!');
+        }
     }
 
     /**

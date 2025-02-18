@@ -10,6 +10,15 @@ class Refund extends Model
     /** @use HasFactory<\Database\Factories\RefundFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'transaction_id',
+        'payer_id',
+        'receiver_id',
+        'status_id',
+        'reason',
+    ];
+
+
     public function payer() {
         return $this->belongsTo(User::class, 'payer_id');
     }

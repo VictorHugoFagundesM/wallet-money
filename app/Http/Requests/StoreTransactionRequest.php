@@ -25,8 +25,8 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "account_number" => ["nullable", "required_without:code", "exists:users,account_number"],
-            "code" => ["nullable", "required_without:account_number", "exists:users,account_number"],
+            "account_number" => ["nullable", "required_without:bank_slip_id", "exists:users,account_number"],
+            "bank_slip_id" => ["nullable", "required_without:account_number", "exists:bank_slips,id"],
             "amount" => ["required", "integer"],
         ];
     }
