@@ -62,7 +62,7 @@ class RefundController extends Controller
             ->whereDate("created_at", Carbon::today()->toDateString())
             ->count();
 
-            if ($refund > 10) {
+            if ($refund > 0) {
                 $status = RefundStatusEnum::PENDING;
             }
 
