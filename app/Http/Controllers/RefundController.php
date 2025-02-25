@@ -62,7 +62,8 @@ class RefundController extends Controller
             ->whereDate("created_at", Carbon::today()->toDateString())
             ->count();
 
-            if ($refund > 0) {
+            // Estorna até 2 transferências por dia sem a necessidade de um operador
+            if ($refund > 1) {
                 $status = RefundStatusEnum::PENDING;
             }
 
